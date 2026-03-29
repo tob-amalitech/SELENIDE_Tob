@@ -88,7 +88,7 @@ public final class BrowserConfig {
      * Returns {@code true} if the cart badge element is currently visible in the header.
      *
      * <p>Shared by {@link org.example.pages.ProductsPage} and {@link org.example.pages.CartPage}
-     * to avoid duplicating the exists-and-visible guard (DRY).</p>
+     * to avoid duplicate of the exists-and-visible guard (DRY).</p>
      *
      * @return {@code true} if the badge is visible (cart has items), {@code false} otherwise
      */
