@@ -1,6 +1,7 @@
 package org.example.pages;
 
 import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.SelenideElement;
 import org.example.config.BrowserConfig;
 
 import java.util.List;
@@ -175,16 +176,15 @@ public class ProductsPage {
      * Opens the side navigation menu from the products page.
      */
     public void openBurgerMenu() {
-        $(BURGER_MENU_BUTTON).shouldBe(Condition.visible, Condition.enabled).click();
+        // Actions.moveToElement + click sends proper mouse events that React's
+        // synthetic event system handles reliably in headless CI. A plain
+        // Selenide .click() on this transparent overlay button can silently
+        // miss in headless Chrome, and any retry risks toggling the menu closed.
+        SelenideElement button = $(BURGER_MENU_BUTTON).shouldBe(Condition.visible, Condition.enabled);
+        Selenide.actions().moveToElement(button).click().perform();
 
-        // SauceDemo's menu panel animates open and can overlap the burger button before
-        // the logout link becomes visible. A regular click retry throws
-        // ElementClickInterceptedException because .bm-menu intercepts it.
-        // JS click bypasses overlay interception entirely.
-        if (!$(LOGOUT_LINK).is(Condition.visible)) {
-            Selenide.executeJavaScript("document.getElementById('react-burger-menu-btn').click()");
-        }
-
+        // shouldBe waits up to the configured timeout (8 s) — enough for the
+        // slide-in animation to complete without any manual retry.
         $(LOGOUT_LINK).shouldBe(Condition.visible);
     }
 
