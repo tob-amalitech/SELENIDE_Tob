@@ -134,4 +134,47 @@ public class CartTest extends BaseTest {
 
         assertThat(WebDriverRunner.url()).contains("/inventory.html");
     }
+
+    /**
+     * Verifies that navigating to the cart without adding any items shows no badge.
+     */
+    @Test
+    @Story("Cart")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Empty cart shows no badge in the header")
+    void emptyCartShowsNoBadge() {
+        productsPage.goToCart();
+
+        assertThat(cartPage.isCartBadgeVisible()).isFalse();
+    }
+
+    /**
+     * Verifies that clicking "Checkout" from a non-empty cart navigates to step one.
+     */
+    @Test
+    @Story("Cart")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Proceeding to checkout navigates to checkout step one")
+    void proceedToCheckoutNavigatesToCheckoutStepOne() {
+        productsPage.addFirstItemToCart();
+        productsPage.goToCart();
+
+        cartPage.proceedToCheckout();
+
+        assertThat(WebDriverRunner.url()).contains("/checkout-step-one.html");
+    }
+
+    /**
+     * Verifies that the quantity shown for a single added item is "1".
+     */
+    @Test
+    @Story("Cart")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Item quantity in cart defaults to 1 when added once")
+    void cartItemQuantityDefaultsToOne() {
+        productsPage.addFirstItemToCart();
+        productsPage.goToCart();
+
+        assertThat(cartPage.getItemQuantity(0)).isEqualTo("1");
+    }
 }

@@ -1,5 +1,6 @@
 package org.example.tests;
 
+import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Description;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
@@ -66,6 +67,15 @@ public class ProductsTest extends BaseTest {
         productDetailPage.addToCart();
         productDetailPage.backToProducts();
         assertThat(productsPage.getCartBadgeCount()).isEqualTo(1);
+    }
+
+    @Test
+    @Story("Product Browsing") @Severity(SeverityLevel.NORMAL)
+    @Description("Back to products from detail page returns to inventory list")
+    void backToProductsFromDetailPageReturnsToInventory() {
+        productsPage.selectProduct(productsPage.getProductNames().get(0));
+        productDetailPage.backToProducts();
+        assertThat(WebDriverRunner.url()).contains("/inventory.html");
     }
 
     // Sorting — parameterised over all four sort options

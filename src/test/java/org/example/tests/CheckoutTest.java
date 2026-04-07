@@ -91,6 +91,44 @@ public class CheckoutTest extends BaseTest {
         assertThat(WebDriverRunner.url()).contains("/cart.html");
     }
 
+    // Navigation — cancel from step two / back home after order
+
+    @Test
+    @Story("Checkout") @Severity(SeverityLevel.NORMAL)
+    @Description("Cancel from checkout overview returns to products page")
+    void cancelFromOverviewReturnsToProductsPage() {
+        checkoutPage.enterShippingInfo(TestDataProvider.VALID_SHIPPING);
+        checkoutPage.continueCheckout();
+
+        checkoutPage.cancelCheckout();
+
+        assertThat(WebDriverRunner.url()).contains("/inventory.html");
+    }
+
+    @Test
+    @Story("Checkout") @Severity(SeverityLevel.NORMAL)
+    @Description("Back Home after order confirmation navigates to the products page")
+    void backHomeAfterOrderConfirmationNavigatesToProductsPage() {
+        checkoutPage.enterShippingInfo(TestDataProvider.VALID_SHIPPING);
+        checkoutPage.continueCheckout();
+        checkoutPage.finishOrder();
+
+        checkoutPage.backHome();
+
+        assertThat(WebDriverRunner.url()).contains("/inventory.html");
+    }
+
+    @Test
+    @Story("Checkout") @Severity(SeverityLevel.NORMAL)
+    @Description("Order overview displays non-blank subtotal and tax labels")
+    void orderOverviewDisplaysSubtotalAndTax() {
+        checkoutPage.enterShippingInfo(TestDataProvider.VALID_SHIPPING);
+        checkoutPage.continueCheckout();
+
+        assertThat(checkoutPage.getSubtotal()).matches("Item total: \\$\\d+\\.\\d{2}");
+        assertThat(checkoutPage.getTax()).matches("Tax: \\$\\d+\\.\\d{2}");
+    }
+
     // Multi-item checkout
 
     @Test

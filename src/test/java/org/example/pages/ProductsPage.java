@@ -6,6 +6,8 @@ import org.example.config.BrowserConfig;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.codeborne.selenide.Selenide;
+
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
@@ -175,9 +177,12 @@ public class ProductsPage {
     public void openBurgerMenu() {
         $(BURGER_MENU_BUTTON).shouldBe(Condition.visible, Condition.enabled).click();
 
-        // SauceDemo side menu can occasionally miss the first click in CI/headless runs.
+        // SauceDemo's menu panel animates open and can overlap the burger button before
+        // the logout link becomes visible. A regular click retry throws
+        // ElementClickInterceptedException because .bm-menu intercepts it.
+        // JS click bypasses overlay interception entirely.
         if (!$(LOGOUT_LINK).is(Condition.visible)) {
-            $(BURGER_MENU_BUTTON).shouldBe(Condition.visible, Condition.enabled).click();
+            Selenide.executeJavaScript("document.getElementById('react-burger-menu-btn').click()");
         }
 
         $(LOGOUT_LINK).shouldBe(Condition.visible);

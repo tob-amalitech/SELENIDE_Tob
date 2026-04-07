@@ -134,6 +134,13 @@ public class CheckoutPage {
     }
 
     /**
+     * Clicks the "Back Home" button on the order confirmation page to return to the products page.
+     */
+    public void backHome() {
+        $("[data-test='back-to-products']").click();
+    }
+
+    /**
      * Returns the number of items listed in the order summary on step two.
      */
     public int getItemCount() {

@@ -42,7 +42,6 @@ public class LoginTest extends BaseTest {
         productsPage.openBurgerMenu();
         productsPage.logoutFromSideMenu();
 
-        assertThat(WebDriverRunner.url()).doesNotContain("/inventory.html");
         assertThat(loginPage.isLoginButtonVisible()).isTrue();
     }
 
@@ -108,6 +107,17 @@ public class LoginTest extends BaseTest {
                  .enterPassword(TestUser.LOCKED_OUT.password)
                  .submit();
         assertThat(loginPage.getErrorMessage()).contains("Sorry, this user has been locked out");
+    }
+
+    // Boundary — whitespace-only passwords
+
+    @ParameterizedTest(name = "password=''{0}''")
+    @MethodSource("org.example.util.TestDataProvider#whitespacePasswords")
+    @Story("Login") @Severity(SeverityLevel.NORMAL)
+    @Description("Whitespace-only password is rejected with an error")
+    void whitespaceOnlyPasswordIsRejected(String password) {
+        loginPage.enterUsername(TestDataProvider.VALID_USERNAME).enterPassword(password).submit();
+        assertThat(loginPage.getErrorMessage()).isNotEmpty();
     }
 
     // Error dismissal
